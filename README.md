@@ -1,6 +1,8 @@
-# text-token
+# Text Token
+
 Tokenization of user strings.
 
+[![Python package](https://github.com/Shapedsundew9/text-token/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/Shapedsundew9/text-token/actions/workflows/python-package.yml)
 [![codecov](https://codecov.io/gh/Shapedsundew9/text-token/graph/badge.svg?token=GESHT01VMT)](https://codecov.io/gh/Shapedsundew9/text-token)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
