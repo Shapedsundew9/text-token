@@ -27,30 +27,7 @@ The code:fmt_str pairs are added using register_token_code()
 When a token with a code in the token_library is converted to a string
 The fmt_str is looked up and formatted with the token parameters.
 """
-token_library: dict[str, str] = {"E00000": "Unknown error code {code} with parameters {parameters}."}
-
-
-def _valid_code(code: str) -> bool:
-    """Sanity of the token code.
-
-    Args
-    ----
-    code: The code to be validated.
-
-    Returns
-    -------
-    True if the code is valid else False
-    """
-    if not code[0] in _CODE_PREFIXES:
-        return False
-    if len(code) != 6:
-        return False
-    code_num: int = int(code[1:])
-    if code_num < 0 or code_num > 99999:
-        return False
-    if code_num in token_library:
-        return False
-    return True
+token_library: dict[str, str] = {}
 
 
 def register_token_code(code: str, fmt_str: str) -> None:
@@ -68,8 +45,15 @@ def register_token_code(code: str, fmt_str: str) -> None:
     -------
     True if the token is valid else False
     """
-    assert _valid_code(code)
-    assert code not in token_library
+    if not code[0] in _CODE_PREFIXES:
+        raise ValueError(f"Invalid token code prefix '{code[0]}' must be one of {_CODE_PREFIXES}.")
+    if len(code) != 6:
+        raise ValueError(f"Invalid token code '{code}' must be 6 characters long.")
+    code_num: int = int(code[1:])
+    if code_num < 0 or code_num > 99999:
+        raise ValueError(f"Invalid token code '{code}' must be in the range 00000 to 99999.")
+    if code in token_library:
+        raise ValueError(f"Invalid token code '{code}' is already in use.")
     token_library[code] = fmt_str
 
 
@@ -88,12 +72,7 @@ class text_token:
         self.parameters: dict[str, Any] = token[self.code]
 
     def __str__(self) -> str:
-        """Convert the token to a human readbale string.
-
-        This can be recursive if a parameter is of type text_token.
-        """
-        if self.code not in token_library:
-            return token_library["E00000"].format_map(vars(self))
+        """Convert the token to a human readbale string."""
         # text_token._logger.debug("Code {}: Parameters: {} Library string: {}".format(
         #   self.code, self.parameters, token_library[self.code]))
         return self.code + ": " + token_library[self.code].format_map(self.parameters)
